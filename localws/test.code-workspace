@@ -1,0 +1,111 @@
+{
+    "folders": [
+        {
+            "name": "MyWorkspace (Remote)",
+            "path": "/remotews"
+        },
+        {
+            "name": "Zephyr",
+            "path": "/opt/toolchains"
+        },
+    ],
+    "settings": {		// Hush CMake
+		"cmake.configureOnOpen": false,
+
+		// IntelliSense
+		"C_Cpp.default.compilerPath": "/opt/toolchains/zephyr-sdk-0.17.1/arm-zephyr-eabi/bin/arm-zephyr-eabi-gcc",
+        "C_Cpp.default.compileCommands": "${workspaceFolder}/build/compile_commands.json",
+        "files.associations": {
+            "stdio.h": "c"
+        },
+    },
+    "tasks": {
+        "version": "2.0.0",
+        "tasks": [
+            {
+				"label": "West Build",
+				"type": "shell",
+				"group": {
+					"kind": "build",
+					"isDefault": true
+				},
+				"command": "west",
+				"args": [
+					"build",
+					"-p",
+					"auto",
+					"-b",
+					"native_sim"
+				],
+				"problemMatcher": [
+					"$gcc"
+				],
+            },
+			{
+				"label": "West Configurable Build",
+				"type": "shell",
+				"group": {
+					"kind": "build",
+				},
+				"command": "west",
+				"args": [
+					"build",
+					"-p",
+					"${input:pristine}",
+					"-b",
+					"${input:board}",
+                    "${input:path}"
+				],
+				"problemMatcher": [
+					"$gcc"
+				]
+			},
+			{
+				"label": "West Flash",
+				"type": "shell",
+				"command": "west",
+				"args": [
+					"flash"
+				],
+				"problemMatcher": [
+					"$gcc"
+				]
+			}
+        ],
+		"inputs": [
+			{
+				"id": "board",
+				"type": "promptString",
+				"default": "nrf52840dk_nrf52840",
+				"description": "See https://docs.zephyrproject.org/latest/boards/index.html"
+			},
+            {
+				"id": "path",
+				"type": "promptString",
+				"default": "apps/",
+				"description": "Enter application path"
+			},
+			{
+				"id": "pristine",
+				"type": "pickString",
+				"description": "Choose when to run a pristine build",
+				"default": "auto",
+				"options": [
+					"auto",
+					"always",
+					"never"
+				],
+			}
+		]
+    },
+	"extensions": {
+		"recommendations": [
+			"ms-vscode.cpptools-extension-pack",
+			"ms-python.python",
+			"ms-vscode.vscode-embedded-tools",
+			"ms-vscode.vscode-serial-monitor",
+			"marus25.cortex-debug",
+			"donjayamanne.python-environment-manager"
+		]
+	}
+}
