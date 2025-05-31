@@ -11,10 +11,6 @@
     ],
     "settings": {		// Hush CMake
 		"cmake.configureOnOpen": false,
-
-		// IntelliSense
-		"C_Cpp.default.compilerPath": "/opt/toolchains/zephyr-sdk-0.17.1/arm-zephyr-eabi/bin/arm-zephyr-eabi-gcc",
-        "C_Cpp.default.compileCommands": "${workspaceFolder}/build/compile_commands.json",
         "files.associations": {
             "stdio.h": "c"
         },
@@ -105,8 +101,7 @@
 			"ms-python.python",
 			"ms-vscode.vscode-embedded-tools",
 			"ms-vscode.vscode-serial-monitor",
-			"marus25.cortex-debug",
-			"donjayamanne.python-environment-manager"
+			"marus25.cortex-debug"
 		]
 	}
 }
