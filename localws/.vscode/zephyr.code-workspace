@@ -12,8 +12,9 @@
     "settings": {		// Hush CMake
 		"cmake.configureOnOpen": false,
         "files.associations": {
-            "stdio.h": "c"
-        },
+			"stdio.h": "c",
+			"kernel.h": "c"
+		},
     },
     "tasks": {
         "version": "2.0.0",
@@ -82,8 +83,13 @@
 				"description": "See https://docs.zephyrproject.org/latest/boards/index.html",
 				"default": "nrf52840dk_nrf52840",
 				"options": [
-					"nrf52840dk_nrf52840",
-					"esp32c3_devkitc"
+					"nrf52840dongle",
+					"nrf54l15dk/nrf54l15/cpuapp",
+					"esp32c3_devkitc",
+					"xg24_dk2601b",
+					"xg27_dk2602a",
+					"native_sim",
+					"xg24"
 				],
 			},
 			{

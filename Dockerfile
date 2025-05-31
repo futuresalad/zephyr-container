@@ -88,6 +88,9 @@ RUN apt-get -y update && \
         tree \
 		xz-utils \
 		thrift-compiler \
+		libxcb1-dev \
+		libxkbcommon-dev \
+		libxcb-render0-dev \
         sudo
 
 # Initialise system locale
@@ -131,7 +134,9 @@ RUN apt-get clean -y && \
 # Create a normal user
 RUN useradd -m -s /bin/bash user && \
     echo "user:${PASSWORD}" | chpasswd && \
-    usermod -aG sudo user
+    usermod -aG sudo user && \
+	usermod -aG dialout user && \
+	usermod -aG uucp user
 
 # Set up directories
 RUN mkdir -p /remotews && \
@@ -195,14 +200,28 @@ RUN if [ -f /opt/toolchains/zephyr-sdk-${ZEPHYR_SDK_VERSION}/sysroots/x86_64-pok
     fi
 
 # nrfutil for norduc chips
+RUN wget https://github.com/NordicSemiconductor/nrf-udev/releases/download/v1.0.1/nrf-udev_1.0.1-all.deb && \
+	dpkg -i nrf-udev_1.0.1-all.deb && \
+	rm nrf-udev_1.0.1-all.deb
+
 RUN wget https://files.nordicsemi.com/artifactory/swtools/external/nrfutil/executables/x86_64-unknown-linux-gnu/nrfutil -O /usr/local/bin/nrfutil && \
     chmod +x /usr/local/bin/nrfutil
 
+# Install JLink tools
+RUN wget -q -O /tmp/jlink.deb --post-data="non_emb_ctr=confirmed&accept_license_agreement=accepted&submit=Download software" https://www.segger.com/downloads/jlink/JLink_Linux_x86_64.deb && \
+	dpkg -i --force-depends /tmp/jlink.deb
+
+RUN export PATH="/opt/SEGGER/JLink:$PATH" && \
+	echo 'export PATH="/opt/SEGGER/JLink:$PATH"' >> ~/.bashrc
+
 USER user
+
+# Install nrfutil
+RUN nrfutil self-upgrade && \
+	nrfutil install device && \
+	nrfutil install nrf5sdk-tools && \
+	nrfutil install completion
+
 # Activate the Python and Zephyr environments for shell sessions
 RUN echo "source ${VIRTUAL_ENV}/bin/activate" >> /home/user/.bashrc && \
     echo "source /opt/toolchains/zephyr/zephyr-env.sh" >> /home/user/.bashrc
-
-RUN nrfutil self-upgrade
-RUN nrfutil install device
-
