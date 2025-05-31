@@ -1,0 +1,27 @@
+{
+    "name": "Zephyr Development Container",
+    "build": {
+        "dockerfile": "../Dockerfile",
+        "context": ".."
+    },
+    "runArgs": [
+        "--privileged",
+        "--device=/dev/bus/usb:/dev/bus/usb"
+    ],
+    "mounts": [
+        "source=/dev,target=/dev,type=bind"
+    ],
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-vscode.cpptools",
+                "ms-python.python",
+                "ms-vscode.cmake-tools"
+            ]
+        }
+    },
+    "workspaceMount": "source=${localWorkspaceFolder}/localws,target=/remotews,type=bind,consistency=cached",
+    "workspaceFolder": "/remotews",
+    "remoteUser": "user",
+    "postCreateCommand": "echo 'Container ready for Zephyr development!'"
+}
