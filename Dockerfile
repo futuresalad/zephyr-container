@@ -7,7 +7,7 @@ FROM debian:${DEBIAN_VERSION}
 ARG PASSWORD="zephyr"
 ARG ZEPHYR_RTOS_VERSION=4.1.0
 ARG ZEPHYR_RTOS_COMMIT=7823374
-ARG ZEPHYR_SDK_VERSION=0.17.1
+ARG ZEPHYR_SDK_VERSION=0.16.8
 ARG TOOLCHAIN_LIST="-t arm-zephyr-eabi"
 ARG WGET_ARGS="-q --show-progress --progress=bar:force:noscroll"
 ARG VIRTUAL_ENV=/opt/venv
@@ -194,8 +194,15 @@ RUN if [ -f /opt/toolchains/zephyr-sdk-${ZEPHYR_SDK_VERSION}/sysroots/x86_64-pok
         cp /opt/toolchains/zephyr-sdk-${ZEPHYR_SDK_VERSION}/sysroots/x86_64-pokysdk-linux/usr/share/openocd/contrib/60-openocd.rules /etc/udev/rules.d/; \
     fi
 
+# nrfutil for norduc chips
+RUN wget https://files.nordicsemi.com/artifactory/swtools/external/nrfutil/executables/x86_64-unknown-linux-gnu/nrfutil -O /usr/local/bin/nrfutil && \
+    chmod +x /usr/local/bin/nrfutil
+
 USER user
 # Activate the Python and Zephyr environments for shell sessions
 RUN echo "source ${VIRTUAL_ENV}/bin/activate" >> /home/user/.bashrc && \
     echo "source /opt/toolchains/zephyr/zephyr-env.sh" >> /home/user/.bashrc
+
+RUN nrfutil self-upgrade
+RUN nrfutil install device
 

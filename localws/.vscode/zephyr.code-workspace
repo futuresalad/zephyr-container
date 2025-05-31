@@ -69,17 +69,22 @@
 			}
         ],
 		"inputs": [
-			{
-				"id": "board",
-				"type": "promptString",
-				"default": "nrf52840dk_nrf52840",
-				"description": "See https://docs.zephyrproject.org/latest/boards/index.html"
-			},
+
             {
 				"id": "path",
 				"type": "promptString",
 				"default": "apps/",
 				"description": "Enter application path"
+			},
+			{
+				"id": "board",
+				"type": "pickString",
+				"description": "See https://docs.zephyrproject.org/latest/boards/index.html",
+				"default": "nrf52840dk_nrf52840",
+				"options": [
+					"nrf52840dk_nrf52840",
+					"esp32c3_devkitc"
+				],
 			},
 			{
 				"id": "pristine",
