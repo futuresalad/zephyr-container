@@ -7,7 +7,7 @@ FROM debian:${DEBIAN_VERSION}
 ARG PASSWORD="zephyr"
 ARG ZEPHYR_RTOS_VERSION=4.1.0
 ARG ZEPHYR_RTOS_COMMIT=7823374
-ARG ZEPHYR_SDK_VERSION=0.16.8
+ARG ZEPHYR_SDK_VERSION=0.17.0
 ARG TOOLCHAIN_LIST="-t arm-zephyr-eabi -t xtensa-espressif_esp32_zephyr-elf -t xtensa-espressif_esp32s2_zephyr-elf -t xtensa-espressif_esp32s3_zephyr-elf -t riscv64-zephyr-elf"
 ARG WGET_ARGS="-q --show-progress --progress=bar:force:noscroll"
 ARG VIRTUAL_ENV=/opt/venv
