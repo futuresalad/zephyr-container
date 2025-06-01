@@ -2,11 +2,15 @@
     "configurations": [
         {
             "name": "Dev Container",
-            "compileCommands": "${workspaceFolder}/build/compile_commands.json",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/opt/toolchains/zephyr/**"
+                "/opt/toolchains/zephyr/**",
+                "/opt/toolchains/zephyr/include/**",
+                "/opt/toolchains/modules/**"
+
+
             ],
+            "compileCommands": "${workspaceFolder}/build/compile_commands.json",
             "browse": {
                 "path": [
                     "${workspaceFolder}/**"

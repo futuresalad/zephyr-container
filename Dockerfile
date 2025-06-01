@@ -8,7 +8,7 @@ ARG PASSWORD="zephyr"
 ARG ZEPHYR_RTOS_VERSION=4.1.0
 ARG ZEPHYR_RTOS_COMMIT=7823374
 ARG ZEPHYR_SDK_VERSION=0.16.8
-ARG TOOLCHAIN_LIST="-t arm-zephyr-eabi"
+ARG TOOLCHAIN_LIST="-t arm-zephyr-eabi -t xtensa-espressif_esp32_zephyr-elf -t xtensa-espressif_esp32s2_zephyr-elf -t xtensa-espressif_esp32s3_zephyr-elf -t riscv64-zephyr-elf"
 ARG WGET_ARGS="-q --show-progress --progress=bar:force:noscroll"
 ARG VIRTUAL_ENV=/opt/venv
 
@@ -181,7 +181,7 @@ RUN cd /opt/toolchains && \
 
 # Install Zephyr SDK for the specified toolchains
 RUN cd /opt/toolchains/zephyr-sdk-${ZEPHYR_SDK_VERSION} && \
-    yes | bash setup.sh
+    bash setup.sh -c ${TOOLCHAIN_LIST}
 
 # Install host tools
 RUN cd /opt/toolchains/zephyr-sdk-${ZEPHYR_SDK_VERSION} && \
@@ -207,9 +207,21 @@ RUN wget https://github.com/NordicSemiconductor/nrf-udev/releases/download/v1.0.
 RUN wget https://files.nordicsemi.com/artifactory/swtools/external/nrfutil/executables/x86_64-unknown-linux-gnu/nrfutil -O /usr/local/bin/nrfutil && \
     chmod +x /usr/local/bin/nrfutil
 
-# Install JLink tools
+# Install JLink dependencies
+RUN apt-get update && apt-get install --no-install-recommends -y \
+    libxcb-render-util0 \
+    libxcb-shape0 \
+    libxcb-icccm4 \
+    libxcb-keysyms1 \
+    libxcb-image0 \
+    libxkbcommon-x11-0 && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install JLink tools and suppress udev errors
 RUN wget -q -O /tmp/jlink.deb --post-data="non_emb_ctr=confirmed&accept_license_agreement=accepted&submit=Download software" https://www.segger.com/downloads/jlink/JLink_Linux_x86_64.deb && \
-	dpkg -i --force-depends /tmp/jlink.deb
+    (dpkg -i --force-depends /tmp/jlink.deb 2>/dev/null || \
+     dpkg --configure -a 2>/dev/null || true) && \
+    rm /tmp/jlink.deb
 
 RUN export PATH="/opt/SEGGER/JLink:$PATH" && \
 	echo 'export PATH="/opt/SEGGER/JLink:$PATH"' >> ~/.bashrc
